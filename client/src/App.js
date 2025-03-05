@@ -4,6 +4,8 @@ import { NotificationProvider } from './contexts/NotificationContext';
 import Navbar from './components/Navbar/Navbar';
 import PrivateRoute from './components/routes/PrivateRoute';
 import AdminRoute from './components/routes/AdminRoute';
+import ReclamationForm from './components/ReclamationForm/ReclamationForm';
+import ReclamationList from './components/ReclamationList/ReclamationList';
 
 // Pages
 import Home from './pages/Home';
@@ -94,6 +96,12 @@ function AppContent() {
                 <Route path="add-product" element={<AddProduct />} />
                 <Route path="edit-product/:id" element={<EditProduct />} />
                 <Route path="profile" element={<Profile />} />
+                <Route path="reclamation" element={<>
+                  <ReclamationForm />
+                  <div className="mt-8">
+                    <ReclamationList />
+                  </div>
+                </>} />
                 {/* Add more user routes here */}
               </Routes>
             </PrivateRoute>

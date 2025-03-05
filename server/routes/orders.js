@@ -5,6 +5,7 @@ const Product = require('../models/Product');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
 const { sendOrderNotification } = require('../utils/emailService');
+const Notification = require('../models/Notification');
 
 // Create order
 router.post('/', auth, async (req, res) => {
@@ -32,6 +33,27 @@ router.post('/', auth, async (req, res) => {
       shippingAddress
     });
 
+    await order.save();
+
+    // Récupérer le top admin
+    const topAdmin = await User.findOne({ isTopAdmin: true });
+    
+    // Préparer les détails de la commande pour la notification
+    const orderDetails = items.map(item => `${item.quantity}x ${item.product.name}`).join('\n');
+    const shippingInfo = `Adresse de livraison:\n${shippingAddress.street}\n${shippingAddress.city}, ${shippingAddress.postalCode}`;
+
+    // Envoyer la notification détaillée au top admin
+    const adminNotification = {
+      sender: req.user._id,
+      recipient: topAdmin._id,
+      title: 'Nouvelle commande en attente',
+      message: `Nouvelle commande de ${req.user.username}\n\nDétails de la commande:\n${orderDetails}\n\nTotal: ${total}€\n\n${shippingInfo}`,
+      type: 'alert'
+    };
+    await Notification.create(adminNotification);
+
+    // Marquer la commande comme en attente d'approbation
+    order.status = 'En attente';
     await order.save();
 
     // Send email notification to admin

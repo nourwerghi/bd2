@@ -245,7 +245,7 @@ export default function Shop() {
                       <h3 className="text-lg font-medium text-gray-900">{product.name}</h3>
                       <p className="mt-1 text-sm text-gray-500">{product.description}</p>
                       <div className="mt-4 flex justify-between items-center">
-                        <span className="text-lg font-bold text-blue-600">${product.price}</span>
+                        <span className="text-lg font-bold text-blue-600">{product.price} TND</span>
                         <button
                           onClick={() => {
                             addItem(product);

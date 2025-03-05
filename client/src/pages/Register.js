@@ -12,7 +12,7 @@ export default function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:4990/api/users/register', {
+      const response = await axios.post('http://localhost:5000/api/users/register', {
         username,
         email,
         password,

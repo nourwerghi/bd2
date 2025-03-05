@@ -12,7 +12,8 @@ const CartModal = ({
   items, 
   total, 
   handleCheckout,
-  handlePaymentSubmit 
+  handlePaymentSubmit,
+  clearCart 
 }) => {
   const navigate = useNavigate();
   const { updateQuantity, removeItem } = useCartStore();
@@ -72,7 +73,7 @@ const CartModal = ({
                           <p className="text-sm text-gray-500">
                             {item.product.category?.main} {item.product.category?.sub && `› ${item.product.category.sub}`}
                           </p>
-                          <p className="text-blue-600">${item.product.price}</p>
+                          <p className="text-blue-600">{item.product.price} TND</p>
                         </div>
                       </div>
                       
@@ -106,7 +107,7 @@ const CartModal = ({
 
                 <div className="flex justify-between items-center mb-6">
                   <span className="text-lg font-semibold">Total:</span>
-                  <span className="text-2xl font-bold text-blue-600">${typeof total === 'function' ? total().toFixed(2) : total.toFixed(2)}</span>
+                  <span className="text-2xl font-bold text-blue-600">{typeof total === 'function' ? total().toFixed(2) : total.toFixed(2)} TND</span>
                 </div>
 
                 <div className="flex justify-end space-x-4">

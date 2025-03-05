@@ -110,7 +110,7 @@ const AdminDashboard = () => {
         </div>
         <div className="stat-card">
           <h3>Revenus</h3>
-          <p>{stats.revenue}€</p>
+          <p>{stats.revenue}TND</p>
         </div>
       </div>
 
@@ -119,7 +119,7 @@ const AdminDashboard = () => {
         <ul>
           {stats.recentSales.map(sale => (
             <li key={sale._id}>
-              Commande par {sale.user.username} - {sale.total}€
+              Commande par {sale.user.username} - {sale.total}TND
             </li>
           ))}
         </ul>
@@ -130,7 +130,7 @@ const AdminDashboard = () => {
         <ul>
           {topSellers.map(seller => (
             <li key={seller._id}>
-              {seller.username} - {seller.totalSales} ventes - {seller.revenue}€
+              {seller.username} - {seller.totalSales} ventes - {seller.revenue}TND
             </li>
           ))}
         </ul>
@@ -207,7 +207,7 @@ const AdminDashboard = () => {
                 </div>
               </td>
               <td>{product.name}</td>
-              <td>{product.price}€</td>
+              <td>{product.price}TND</td>
               <td>{product.user.username}</td>
               <td>
                 <button onClick={() => handleDeleteProduct(product._id)}>Supprimer</button>

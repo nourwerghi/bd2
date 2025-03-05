@@ -77,7 +77,17 @@ export default function AddProduct() {
     try {
       let imageUrl = '';
       if (productData.image) {
-        imageUrl = await api.products.uploadImage(productData.image);
+        try {
+          const formDataImg = new FormData();
+          formDataImg.append('image', productData.image);
+          const uploadResponse = await api.upload.image(formDataImg);
+          if (uploadResponse && uploadResponse.url) {
+            imageUrl = uploadResponse.url;
+          }
+        } catch (uploadError) {
+          console.error('Erreur upload image:', uploadError);
+          // Continuer sans image si l'upload échoue
+        }
       }
 
       const productToCreate = {

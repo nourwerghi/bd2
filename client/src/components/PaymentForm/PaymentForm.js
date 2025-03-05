@@ -39,29 +39,29 @@ const PaymentForm = ({ onSubmit }) => {
 
     if (paymentMethod === 'card') {
       if (!formData.cardNumber.match(/^\d{16}$/)) {
-        newErrors.cardNumber = 'Please enter a valid 16-digit card number';
+        newErrors.cardNumber = 'Veuillez entrer un numéro de carte valide à 16 chiffres';
       }
       if (!formData.cardHolder.trim()) {
-        newErrors.cardHolder = 'Card holder name is required';
+        newErrors.cardHolder = 'Le nom du titulaire de la carte est requis';
       }
       if (!formData.expiryDate.match(/^(0[1-9]|1[0-2])\/([0-9]{2})$/)) {
-        newErrors.expiryDate = 'Please enter a valid expiry date (MM/YY)';
+        newErrors.expiryDate = 'Veuillez entrer une date d\'expiration valide (MM/AA)';
       }
       if (!formData.cvv.match(/^\d{3,4}$/)) {
-        newErrors.cvv = 'Please enter a valid CVV';
+        newErrors.cvv = 'Veuillez entrer un CVV valide';
       }
     } else {
       if (!formData.deliveryAddress.trim()) {
-        newErrors.deliveryAddress = 'Delivery address is required';
+        newErrors.deliveryAddress = 'L\'adresse de livraison est requise';
       }
       if (!formData.city.trim()) {
-        newErrors.city = 'City is required';
+        newErrors.city = 'La ville est requise';
       }
-      if (!formData.postalCode.match(/^\d{5}$/)) {
-        newErrors.postalCode = 'Please enter a valid postal code';
+      if (!formData.postalCode.trim()) {
+        newErrors.postalCode = 'Le code postal est requis';
       }
-      if (!formData.phone.match(/^\d{10}$/)) {
-        newErrors.phone = 'Please enter a valid phone number';
+      if (!formData.phone.match(/^\+?[0-9\s\-()]{6,20}$/)) {
+        newErrors.phone = 'Veuillez entrer un numéro de téléphone valide';
       }
     }
 
@@ -72,19 +72,21 @@ const PaymentForm = ({ onSubmit }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      onSubmit({
+      const orderData = {
         paymentMethod,
-        formData
-      });
+        formData,
+        status: paymentMethod === 'cash' ? 'pending_approval' : 'processing'
+      };
+      onSubmit(orderData);
     }
   };
 
   return (
     <div className="payment-form">
-      <h2>Payment Information</h2>
+      <h2>Informations de Paiement</h2>
       <div className="total-amount">
-        <span>Total Amount:</span>
-        <span className="amount">${total.toFixed(2)}</span>
+        <span>Montant Total:</span>
+        <span className="amount">{Number(typeof total === 'function' ? total() : total || 0).toFixed(2)} TND</span>
       </div>
 
       <div className="payment-method-selector">
@@ -93,14 +95,14 @@ const PaymentForm = ({ onSubmit }) => {
           className={`method-button ${paymentMethod === 'card' ? 'active' : ''}`}
           onClick={() => setPaymentMethod('card')}
         >
-          Card Payment
+          Paiement par Carte
         </button>
         <button
           type="button"
           className={`method-button ${paymentMethod === 'cash' ? 'active' : ''}`}
           onClick={() => setPaymentMethod('cash')}
         >
-          Cash on Delivery
+          Paiement à la Livraison
         </button>
       </div>
 
@@ -108,7 +110,7 @@ const PaymentForm = ({ onSubmit }) => {
         {paymentMethod === 'card' ? (
           <div className="card-payment-section">
             <div className="form-group">
-              <label htmlFor="cardNumber">Card Number</label>
+              <label htmlFor="cardNumber">Numéro de Carte</label>
               <input
                 type="text"
                 id="cardNumber"
@@ -122,7 +124,7 @@ const PaymentForm = ({ onSubmit }) => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="cardHolder">Card Holder Name</label>
+              <label htmlFor="cardHolder">Nom du Titulaire</label>
               <input
                 type="text"
                 id="cardHolder"
@@ -136,14 +138,14 @@ const PaymentForm = ({ onSubmit }) => {
 
             <div className="form-row">
               <div className="form-group">
-                <label htmlFor="expiryDate">Expiry Date</label>
+                <label htmlFor="expiryDate">Date d'Expiration</label>
                 <input
                   type="text"
                   id="expiryDate"
                   name="expiryDate"
                   value={formData.expiryDate}
                   onChange={handleInputChange}
-                  placeholder="MM/YY"
+                  placeholder="MM/AA"
                   maxLength="5"
                 />
                 {errors.expiryDate && <span className="error">{errors.expiryDate}</span>}
@@ -167,55 +169,55 @@ const PaymentForm = ({ onSubmit }) => {
         ) : (
           <div className="cash-delivery-section">
             <div className="form-group">
-              <label htmlFor="deliveryAddress">Delivery Address</label>
+              <label htmlFor="deliveryAddress">Adresse de Livraison</label>
               <textarea
                 id="deliveryAddress"
                 name="deliveryAddress"
                 value={formData.deliveryAddress}
                 onChange={handleInputChange}
-                placeholder="Enter your delivery address"
+                placeholder="Entrez votre adresse de livraison"
               />
               {errors.deliveryAddress && <span className="error">{errors.deliveryAddress}</span>}
             </div>
 
             <div className="form-row">
               <div className="form-group">
-                <label htmlFor="city">City</label>
+                <label htmlFor="city">Ville</label>
                 <input
                   type="text"
                   id="city"
                   name="city"
                   value={formData.city}
                   onChange={handleInputChange}
-                  placeholder="Enter your city"
+                  placeholder="Entrez votre ville"
                 />
                 {errors.city && <span className="error">{errors.city}</span>}
               </div>
 
               <div className="form-group">
-                <label htmlFor="postalCode">Postal Code</label>
+                <label htmlFor="postalCode">Code Postal</label>
                 <input
                   type="text"
                   id="postalCode"
                   name="postalCode"
                   value={formData.postalCode}
                   onChange={handleInputChange}
-                  placeholder="12345"
-                  maxLength="5"
+                  placeholder="Entrez votre code postal"
+                  maxLength="15"
                 />
                 {errors.postalCode && <span className="error">{errors.postalCode}</span>}
               </div>
             </div>
 
             <div className="form-group">
-              <label htmlFor="phone">Phone Number</label>
+              <label htmlFor="phone">Numéro de Téléphone</label>
               <input
                 type="tel"
                 id="phone"
                 name="phone"
                 value={formData.phone}
                 onChange={handleInputChange}
-                placeholder="Enter your phone number"
+                placeholder="Entrez votre numéro de téléphone"
                 maxLength="10"
               />
               {errors.phone && <span className="error">{errors.phone}</span>}
@@ -224,7 +226,7 @@ const PaymentForm = ({ onSubmit }) => {
         )}
 
         <button type="submit" className="submit-button">
-          Proceed to Payment
+          Valider Demande
         </button>
       </form>
     </div>
